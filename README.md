@@ -1,5 +1,9 @@
 # DreamCraft
 
+## Download
+
+Get the latest release, including the prebuilt Windows executable and SHA-256 checksum, from the [DreamCraft releases page](https://github.com/deadcodeXO/DreamCraft/releases/latest).
+
 DreamCraft is a Rust-powered local website design studio. It serves the editor on 127.0.0.1:4387 and starts with the editable website in site/.
 
 ## Run it
@@ -81,4 +85,6 @@ Dream AI has two modes. Ask sends the open file, recent Ask conversation, and up
 - assets/: editor UI and locally bundled CodeMirror assets
 - site/: editable website project
 - .dreamcraft/workspace.json: recent website folders and the active website path; website files remain in their selected folders
+
+
 

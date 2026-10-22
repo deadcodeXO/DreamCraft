@@ -1,0 +1,64 @@
+name: Build and publish Windows release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Cargo.toml
+      - Cargo.lock
+      - .github/workflows/release.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dreamcraft-v1-0-0-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build optimized Windows executable
+        run: cargo build --release --locked
+
+      - name: Verify release version and prepare assets
+        shell: pwsh
+        run: |
+          $metadata = cargo metadata --no-deps --format-version 1 | ConvertFrom-Json
+          $version = ($metadata.packages | Where-Object name -eq 'dreamcraft' | Select-Object -First 1).version
+          if ($version -ne '1.0.0') { throw "Expected DreamCraft 1.0.0, found $version" }
+          $stage = Join-Path $env:GITHUB_WORKSPACE 'release-assets'
+          New-Item -ItemType Directory -Force -Path $stage | Out-Null
+          $exeName = 'DreamCraft-1.0.0-windows-x64.exe'
+          Copy-Item 'target/release/dreamcraft.exe' (Join-Path $stage $exeName)
+          $hash = (Get-FileHash (Join-Path $stage $exeName) -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  $exeName" | Set-Content (Join-Path $stage 'SHA256SUMS.txt') -Encoding ascii
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: DreamCraft 1.0.0
+          target_commitish: ${{ github.sha }}
+          draft: false
+          prerelease: false
+          body: |
+            DreamCraft 1.0.0 — first stable public release.
+
+            This package contains the optimized 64-bit Windows desktop executable. Microsoft Edge WebView2 Runtime is required.
+
+            Verify the download with the SHA-256 value in `SHA256SUMS.txt`.
+          files: |
+            release-assets/DreamCraft-1.0.0-windows-x64.exe
+            release-assets/SHA256SUMS.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

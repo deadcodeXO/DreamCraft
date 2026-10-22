@@ -1,6 +1,6 @@
 [package]
 name = "dreamcraft"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
 description = "A modern, Rust-powered visual web design studio"
 
@@ -33,4 +33,5 @@ lto = "thin"
 codegen-units = 1
 strip = true
 panic = "abort"
+
 
