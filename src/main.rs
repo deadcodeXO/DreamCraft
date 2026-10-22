@@ -7333,6 +7333,7 @@ fn run_native_desktop(address: &str, smoke_exit: bool) -> Result<(), String> {
         .with_resizable(false)
         .with_decorations(false)
         .with_always_on_top(true)
+        .with_visible(false)
         .with_theme(Some(Theme::Dark))
         .build(&event_loop)
         .map_err(|error| format!("Could not create the DreamCraft startup window: {error}"))?;
@@ -7426,13 +7427,27 @@ fn run_native_desktop(address: &str, smoke_exit: bool) -> Result<(), String> {
     let main_window = Some(main_window);
     let mut _main_webview = Some(main_webview);
     let mut smoke_exit_at = None;
+    let mut splash_visible_at = None;
+    let mut splash_close_at = None;
+    let mut editor_ready = false;
+    let mut editor_revealed = false;
     let _ = event_loop.run_return(move |event, _, control_flow| {
+        if splash_close_at.is_some_and(|deadline| Instant::now() >= deadline) {
+            splash_window.take();
+            splash_webview.take();
+            splash_close_at = None;
+            if smoke_exit {
+                smoke_exit_at = Some(Instant::now() + Duration::from_millis(500));
+            }
+        }
         if let Some(deadline) = smoke_exit_at {
             if Instant::now() >= deadline {
                 desktop_log("DREAMCRAFT_DESKTOP_SMOKE_CLOSED");
                 *control_flow = ControlFlow::Exit;
                 return;
             }
+            *control_flow = ControlFlow::WaitUntil(deadline);
+        } else if let Some(deadline) = splash_close_at {
             *control_flow = ControlFlow::WaitUntil(deadline);
         } else {
             *control_flow = ControlFlow::Wait;
@@ -7446,7 +7461,22 @@ fn run_native_desktop(address: &str, smoke_exit: bool) -> Result<(), String> {
                 *control_flow = ControlFlow::Exit;
             }
             Event::UserEvent(DesktopEvent::SplashLoaded) => {
-                update_splash(splash_webview.as_ref(), 24, "Preparing your workspace")
+                let visible_at = Instant::now();
+                splash_visible_at = Some(visible_at);
+                if let Some(window) = splash_window.as_ref() {
+                    window.set_visible(true);
+                }
+                update_splash(splash_webview.as_ref(), 24, "Preparing your workspace");
+                if editor_ready && !editor_revealed {
+                    if let Some(window) = main_window.as_ref() {
+                        window.set_visible(true);
+                        window.set_focus();
+                    }
+                    update_splash(splash_webview.as_ref(), 100, "Ready");
+                    desktop_log("DREAMCRAFT_DESKTOP_READY");
+                    editor_revealed = true;
+                    splash_close_at = Some(visible_at + Duration::from_millis(1800));
+                }
             }
             Event::UserEvent(DesktopEvent::EditorLoadStarted) => {
                 update_splash(splash_webview.as_ref(), 48, "Loading the editor window")
@@ -7455,17 +7485,18 @@ fn run_native_desktop(address: &str, smoke_exit: bool) -> Result<(), String> {
                 update_splash(splash_webview.as_ref(), 76, "Preparing your project tools")
             }
             Event::UserEvent(DesktopEvent::EditorReady) => {
-                if let Some(window) = main_window.as_ref() {
-                    window.set_visible(true);
-                    window.set_focus();
-                }
-                update_splash(splash_webview.as_ref(), 100, "Ready");
-                desktop_log("DREAMCRAFT_DESKTOP_READY");
-                splash_window.take();
-                splash_webview.take();
-                if smoke_exit {
-                    smoke_exit_at = Some(Instant::now() + Duration::from_millis(500));
-                    *control_flow = ControlFlow::WaitUntil(smoke_exit_at.unwrap());
+                editor_ready = true;
+                if let Some(visible_at) = splash_visible_at {
+                    if !editor_revealed {
+                        if let Some(window) = main_window.as_ref() {
+                            window.set_visible(true);
+                            window.set_focus();
+                        }
+                        update_splash(splash_webview.as_ref(), 100, "Ready");
+                        desktop_log("DREAMCRAFT_DESKTOP_READY");
+                        editor_revealed = true;
+                        splash_close_at = Some(visible_at + Duration::from_millis(1800));
+                    }
                 }
             }
             Event::UserEvent(DesktopEvent::WindowMinimize) => {
