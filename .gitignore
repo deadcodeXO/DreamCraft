@@ -1,0 +1,9 @@
+/target/
+/.dreamcraft/
+**/node_modules/
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3

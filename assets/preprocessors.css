@@ -1,0 +1,39 @@
+.preprocessor-modal{width:min(760px,96vw);max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+.preprocessor-header{display:flex;align-items:flex-start;gap:16px;padding:0 0 11px}
+.preprocessor-header h2{margin:0 0 6px}
+.preprocessor-header p{margin:0;line-height:1.55}
+.preprocessor-header .icon-btn{margin-left:auto;flex:none;font-size:17px}
+.preprocessor-settings{display:grid;grid-template-columns:minmax(0,1fr) 90px 150px;align-items:center;gap:12px;margin:8px 0 15px;padding:12px;border:1px solid #2b2c37;border-radius:9px;background:#111219}
+.preprocessor-watch{display:flex;align-items:flex-start;gap:9px;color:#d4d2df;font-size:10px;cursor:pointer}
+.preprocessor-watch input{margin:2px 0 0;accent-color:#a17bff}
+.preprocessor-watch span{display:grid;gap:4px}
+.preprocessor-watch strong{font-weight:650}
+.preprocessor-watch small{color:#8e8f9e;font-size:9px;line-height:1.45}
+.preprocessor-style-label{color:#9697a4;font-size:9px}
+.preprocessor-style{min-width:0}
+.preprocessor-list-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:1px 2px 8px;color:#d6d3e0;font-size:10px}
+.preprocessor-list-heading span{color:#858694;font-size:9px}
+.preprocessor-list{min-height:95px;max-height:42vh;overflow:auto;border:1px solid #2b2c37;border-radius:9px;background:#111219;scrollbar-color:#474351 #15161f;scrollbar-width:thin}
+.preprocessor-list::-webkit-scrollbar{width:9px}.preprocessor-list::-webkit-scrollbar-track{background:#15161f}.preprocessor-list::-webkit-scrollbar-thumb{background:#474351;border:2px solid #15161f;border-radius:8px}
+.preprocessor-row{display:grid;grid-template-columns:minmax(130px,.9fr) minmax(150px,1fr) auto;align-items:center;gap:9px;padding:9px 10px;border-bottom:1px solid #252630}
+.preprocessor-row:last-child{border-bottom:0}
+.preprocessor-source{min-width:0;display:flex;align-items:center;gap:8px;color:#dedbe7;font:10px var(--mono)}
+.preprocessor-kind{width:34px;flex:none;padding:4px 3px;border-radius:4px;background:#29233a;color:#bba2ff;text-align:center;font:700 8px var(--font)}
+.preprocessor-source-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.preprocessor-output{min-width:0;width:100%;height:30px;padding:0 8px;border:1px solid #30313d;border-radius:6px;background:#171820;color:#cbcbd7;font:9px var(--mono);outline:0}
+.preprocessor-output:focus{border-color:#7561b8}
+.preprocessor-output.invalid{border-color:#9d4956;color:#ffb4bd}
+.preprocessor-row .btn{height:30px;padding:0 10px;font-size:9px}
+.preprocessor-row-status{grid-column:1/-1;color:#8f91a0;font-size:9px;overflow-wrap:anywhere}
+.preprocessor-row-status.error{color:#ff9fac}
+.preprocessor-empty{padding:22px;text-align:center;color:#a3a4b0;font-size:10px;line-height:1.6}
+.preprocessor-status{min-height:32px;padding:10px 2px 1px;color:#999aa7;font-size:10px;line-height:1.45;overflow-wrap:anywhere}
+.preprocessor-status.error{color:#ff9fac}
+html[data-theme="light"] .preprocessor-settings,html[data-theme="light"] .preprocessor-list{background:#fafafd;border-color:#dfe1e8}
+html[data-theme="light"] .preprocessor-watch,html[data-theme="light"] .preprocessor-list-heading,html[data-theme="light"] .preprocessor-source{color:#383a47}
+html[data-theme="light"] .preprocessor-watch small,html[data-theme="light"] .preprocessor-list-heading span,html[data-theme="light"] .preprocessor-style-label,html[data-theme="light"] .preprocessor-status,html[data-theme="light"] .preprocessor-row-status{color:#707280}
+html[data-theme="light"] .preprocessor-row{border-color:#e8e9ef}
+html[data-theme="light"] .preprocessor-output{background:#fff;border-color:#d7d9e2;color:#353744}
+html[data-theme="light"] .preprocessor-kind{background:#f0ecfa;color:#6845c8}
+html[data-theme="light"] .preprocessor-row-status.error,html[data-theme="light"] .preprocessor-status.error{color:#a3293c}
+@media(max-width:620px){.preprocessor-settings{grid-template-columns:1fr 90px}.preprocessor-watch{grid-column:1/-1}.preprocessor-row{grid-template-columns:minmax(90px,1fr) minmax(115px,1.2fr)}.preprocessor-row .btn{grid-column:2;justify-self:end}.preprocessor-row-status{grid-column:1/-1}.preprocessor-modal{max-height:94vh}}

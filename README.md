@@ -82,4 +82,3 @@ Dream AI has two modes. Ask sends the open file, recent Ask conversation, and up
 - site/: editable website project
 - .dreamcraft/workspace.json: recent website folders and the active website path; website files remain in their selected folders
 
-
