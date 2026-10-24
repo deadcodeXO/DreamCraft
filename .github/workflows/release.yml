@@ -8,6 +8,7 @@ on:
       - Cargo.lock
       - build.rs
       - src/main.rs
+      - assets/index.html
       - assets/dreamcraft.ico
       - .github/workflows/release.yml
   workflow_dispatch:
